@@ -1,0 +1,63 @@
+[MASTER]
+# A comma-separated list of package or module names from where C extensions may
+# be loaded. Extensions are loading into the active Python interpreter and may
+# run arbitrary code
+extension-pkg-whitelist=
+    ujson,
+
+load-plugins=
+    pylint.extensions.bad_builtin,
+    pylint.extensions.check_elif,
+    pylint.extensions.docparams,
+    pylint.extensions.docstyle,
+    pylint.extensions.mccabe,
+    pylint.extensions.overlapping_exceptions,
+    pylint.extensions.redefined_variable_type,
+
+# Pickle collected data for later comparisons.
+persistent=no
+
+[MESSAGES CONTROL]
+
+enable=all
+
+disable=
+    # Enable once there are too many suppressed messages
+    # Disabled bad-continuation due to conflicts with black. We finally decided
+    # to just accept black "as is" even in this instance.
+    duplicate-code,
+    invalid-name,  # too strict check
+    too-few-public-methods,  # Not so helpful for us (basically too strict).
+    missing-module-docstring,
+    missing-class-docstring,
+    missing-function-docstring,
+    unsupported-binary-operation, # DRF did not correctly document binary operator for permission classes
+    fixme,
+    no-member,  # Since DRF marvelous serializer.Serializer implementation
+    too-many-ancestors,  # DRF contain classes that raise this. This can be corrected just by not using the class.
+    unnecessary-ellipsis, # Disable unnecessery-elipses because of this: https://github.com/microsoft/pylance-release/issues/5127
+    unused-argument,
+    no-name-in-module,  # For compatibility with Pydantic
+    no-self-argument,
+    bad-mcs-classmethod-argument,
+    too-many-return-statements,
+    too-many-arguments,
+    broad-except,
+    too-many-instance-attributes,
+    protected-access,  # Checked by Pyright, we do not need two checks for one thing
+
+[REPORTS]
+# Template used to display messages. This is a python new-style format string
+# used to format the message information. See doc for all details
+msg-template='{path}:{line}: [{msg_id}({symbol}), {obj}] {msg})'
+
+# Set the output format. Available formats are text, parseable, colorized, json
+# and msvs (visual studio).You can also give a reporter class, eg
+# mypackage.mymodule.MyReporterClass.
+output-format=colorized
+
+# Tells whether to display a full report or only the messages
+reports=no
+
+# Activate the evaluation score.
+score=no

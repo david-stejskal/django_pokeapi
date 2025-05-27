@@ -1,0 +1,92 @@
+{
+    "compounds": [
+        {
+            "name": "Django/Celery",
+            "consoleTitle": "Django/Celery",
+            "configurations": [
+                "Celery",
+                "Django",
+            ],
+            "stopAll": true,
+            "presentation": {
+                "hidden": false,
+                "order": 1
+            }
+        }
+    ],
+    "configurations": [
+        {
+            "name": "Django",
+            "consoleTitle": "Django",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/manage.py",
+            "args": [
+                "runserver"
+            ],
+            "env": {
+                "PYTHONPATH": ".",
+                "POKEAPI_CONFIG": "${workspaceFolder}/django_pokeapi/config/my-example.env",
+            },
+            "django": true,
+            "justMyCode": false,
+            "console": "integratedTerminal",
+        },
+        {
+            "name": "Celery",
+            "consoleTitle": "Celery",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "celery",
+            "justMyCode": false,
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": ".",
+                "POKEAPI_CONFIG": "${workspaceFolder}/django_pokeapi/config/my-example.env"
+            },
+            "args": [
+                "--app=django_pokeapi.apps.common",
+                "worker",
+                "--loglevel=INFO",
+                "--pool=solo",
+                "-B",
+                "--without-heartbeat",
+                "--without-gossip",
+            ]
+        },
+        {
+            "name": "Migrate",
+            "consoleTitle": "Migrate",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/manage.py",
+            "args": [
+                "migrate"
+            ],
+            "env": {
+                "PYTHONPATH": ".",
+                "POKEAPI_CONFIG": "${workspaceFolder}/django_pokeapi/config/my-example.env",
+            },
+            "django": true,
+            "justMyCode": false,
+            "console": "integratedTerminal",
+        },
+        {
+            "name": "Make Migration",
+            "consoleTitle": "Make Migration",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/manage.py",
+            "args": [
+                "makemigrations"
+            ],
+            "env": {
+                "PYTHONPATH": ".",
+                "POKEAPI_CONFIG": "${workspaceFolder}/django_pokeapi/config/my-example.env",
+            },
+            "django": true,
+            "justMyCode": false,
+            "console": "integratedTerminal",
+        },
+    ]
+}
