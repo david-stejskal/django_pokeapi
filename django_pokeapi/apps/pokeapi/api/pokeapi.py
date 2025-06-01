@@ -1,4 +1,4 @@
-from django.http import Http404
+from django.http import Http404, HttpRequest
 from ninja import Query, Router
 
 from django_pokeapi.apps.pokeapi import operations
@@ -17,28 +17,27 @@ router = Router(tags=["pokemon"])
 # Pokemon endpoints
 @router.get("/pokemon/all", response=list[PokemonListDTO])
 def get_pokemon_list(
-    _request, offset: int = 0, limit: int = 100
+    request: HttpRequest, offset: int = 0, limit: int = 100
 ) -> list[PokemonListDTO]:
     """Get list of all Pokemon with pagination.
 
     Args:
-        offset: Starting position (which Pokemon ID to start from)
-        limit: Maximum number of Pokemon to return (when set to 0, all Pokemon are returned)
+        request (HttpRequest): Request object (not used)
+        offset (int): Starting position (which Pokemon ID to start from)
+        limit (int): Maximum number of Pokemon to return (when set to 0, all Pokemon are returned)
 
     Returns:
-        list[PokemonListDTO] with prefetched relations and applied pagination
+        list[PokemonListDTO]: List with prefetched relations and applied pagination
     """
     return operations.get_pokemon_list(offset, limit)
 
 
 @router.get("/pokemon", response=PokemonDTO)
-def get_pokemon_detail(
-    _request, pokemon_request: Query[PokemonRequestDTO]
-) -> PokemonDTO:
+def get_pokemon_detail(request, pokemonrouter: Query[PokemonRequestDTO]) -> PokemonDTO:
     """Get detailed information about a specific Pokemon by ID or name.
     Either name or id must be provided.
     """
-    return operations.get_pokemon(pokemon_request)
+    return operations.get_pokemon(pokemonrouter)
 
 
 @router.get(
@@ -46,7 +45,7 @@ def get_pokemon_detail(
     response=PokemonComparisonDTO,
 )
 def compare_pokemon(
-    _request, pokemon1_name: str, pokemon2_name: str
+    request: HttpRequest, pokemon1_name: str, pokemon2_name: str
 ) -> PokemonComparisonDTO:
     """Compare Pokemon 1 stats with Pokemon 2 stats."""
     comparison = operations.compare_pokemon_stats(pokemon1_name, pokemon2_name)
@@ -58,14 +57,14 @@ def compare_pokemon(
 
 # Type endpoints
 @router.get("/types", response=list[TypeDTO])
-def list_types(_request):
+def list_types(request: HttpRequest):
     """Get list of all Pokemon types."""
     types = operations.get_all_types()
     return types
 
 
 @router.get("/types/{type_name}", response=TypeDTO)
-def get_type_details(_request, type_name: str) -> TypeDTO:
+def get_type_details(request: HttpRequest, type_name: str) -> TypeDTO:
     """Get detailed type information."""
     type_data = operations.get_type_details(type_name)
     if not type_data:
@@ -76,15 +75,17 @@ def get_type_details(_request, type_name: str) -> TypeDTO:
 
 # Ability endpoints
 @router.get("/abilities", response=list[AbilityDTO])
-def list_abilities(_request, offset: int = 0, limit: int = 20):
+def list_abilities(request: HttpRequest, offset: int = 0, limit: int = 20):
     """Get list of all Pokemon abilities with pagination.
 
     Args:
-        offset: Starting position (which Ability ID to start from)
-        limit: Maximum number of Abilities to return (when set to 0, all Abilities are returned)
+        request (HttpRequest): Request object (not used)
+        offset (int): Starting position (which Ability ID to start from)
+        limit (int): Maximum number of Abilities to return
+            (when set to 0, all Abilities are returned)
 
     Returns:
-        list[AbilityDTO] with applied pagination
+        list[AbilityDTO]: List with applied pagination
     """
     abilities = operations.get_all_abilities(offset, limit)
 
@@ -92,7 +93,7 @@ def list_abilities(_request, offset: int = 0, limit: int = 20):
 
 
 @router.get("/abilities/{ability_name}", response=AbilityDTO)
-def get_ability_details(_request, ability_name: str) -> AbilityDTO:
+def get_ability_details(request: HttpRequest, ability_name: str) -> AbilityDTO:
     """Get detailed ability information."""
     ability_data = operations.get_ability_details(ability_name)
     if not ability_data:
