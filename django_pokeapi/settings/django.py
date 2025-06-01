@@ -9,6 +9,8 @@ ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 ENVIRONMENT = env.str("ENVIRONMENT")
 
 INSTALLED_APPS = [
+    "ninja",
+    "django.contrib.staticfiles",
     "django_pokeapi.apps.common",
     "django_pokeapi.apps.pokeapi",
 ]
@@ -19,6 +21,11 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "django_pokeapi.urls.urls"
 WSGI_APPLICATION = "django_pokeapi.wsgi.application"
+
+# Static files configuration
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_DIRS = []
 
 TEMPLATES = [
     {
@@ -41,6 +48,45 @@ DATABASES = {
     },
 }
 
+# Logging configuration
+LOGGING_LEVEL: str = env.str("LOGGING_LEVEL")
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "default": {"format": "[%(asctime)s][%(levelname)s][%(name)s]: %(message)s"},
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "default",
+            "level": LOGGING_LEVEL,
+            "stream": "ext://sys.stdout",
+        },
+    },
+    "loggers": {
+        "root": {
+            "handlers": ["console"],
+            "level": LOGGING_LEVEL,
+        },
+        "django": {
+            "handlers": ["console"],
+            "level": LOGGING_LEVEL,
+            "propagate": False,
+        },
+        "django_pokeapi": {
+            "handlers": ["console"],
+            "level": LOGGING_LEVEL,
+            "propagate": False,
+        },
+        "httpx": {
+            "handlers": ["console"],
+            "level": "WARNING",  # Suppress INFO level HTTP request logs
+            "propagate": False,
+        },
+    },
+}
 
 # Internationalization
 LANGUAGE_CODE = "en-us"

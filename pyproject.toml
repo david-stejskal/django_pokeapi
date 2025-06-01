@@ -18,12 +18,12 @@ django-environ = "^0.11"
 
 # Other
 httpx = {extras = ["http2"], version = "^0.27.0"}
+asgiref = "^3.8.0"
 psycopg = {extras = ["binary"], version = "^3.2.2"}
 celery = "^5.3.4"
 redis = "^5.0.1"
 requests = "2.32.2"
-
-# Aditional Utils
+orjson = "^3.10.18 "
 psycopg2-binary = "^2.9.3"
 
 

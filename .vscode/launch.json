@@ -88,5 +88,21 @@
             "justMyCode": false,
             "console": "integratedTerminal",
         },
+        {
+            "name": "Populate DB",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/manage.py",
+            "args": [
+                "populate_db"
+            ],
+            "django": true,
+            "justMyCode": true,
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": ".",
+                "POKEAPI_CONFIG": "${workspaceFolder}/django_pokeapi/config/my-example.env"
+            },
+        },
     ]
 }

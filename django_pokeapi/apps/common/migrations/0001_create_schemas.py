@@ -1,6 +1,6 @@
 from django.db import migrations
 
-from django_pokeapi.utils import load_db_migration
+from django_pokeapi.utils import load_db_sql_migration
 
 
 class Migration(migrations.Migration):
@@ -8,6 +8,6 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RunSQL(
-            load_db_migration("common", "2025.3.23_1__create_schemes.sql")
+            load_db_sql_migration("common", "2025.5.26_1__create_schemes.sql")
         ),
     ]

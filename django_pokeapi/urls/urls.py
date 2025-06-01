@@ -1,7 +1,7 @@
 from django.urls import path
 from django.views.generic import RedirectView
 
-from .v1.api import api
+from .v1 import api
 
 urlpatterns = [
     path("", RedirectView.as_view(url="api/v1/docs")),
