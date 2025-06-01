@@ -45,36 +45,25 @@ class Command(BaseCommand):
     @transaction.atomic
     def handle(self, *args: typing.Any, **options: typing.Any) -> None:
         """Execute the command."""
-        # Suppress httpx HTTP request logs during this command execution
-        httpx_logger = logging.getLogger("httpx")
-        original_level = httpx_logger.level
-        httpx_logger.setLevel(logging.WARNING)
+        start_time = timezone.now()
+        formatted_start_time = start_time.strftime("%d.%m.%Y %H:%M:%S")
+        _log.info("Starting optimized PokeAPI data update at %s", formatted_start_time)
 
         try:
-            start_time = timezone.now()
-            formatted_start_time = start_time.strftime("%d.%m.%Y %H:%M:%S")
-            _log.info(
-                "Starting optimized PokeAPI data update at %s", formatted_start_time
-            )
+            asyncio.run(self._populate_db(options))
+        except Exception as e:
+            _log.error("Unexpected error occurred!", exc_info=e)
+            raise CommandError(f"Error updating database: {str(e)}") from e
 
-            try:
-                asyncio.run(self._populate_db(options))
-            except Exception as e:
-                _log.error("Unexpected error occurred!", exc_info=e)
-                raise CommandError(f"Error updating database: {str(e)}") from e
+        end_time = timezone.now()
+        duration = end_time - start_time
+        formatted_end_time = end_time.strftime("%d.%m.%Y %H:%M:%S")
 
-            end_time = timezone.now()
-            duration = end_time - start_time
-            formatted_end_time = end_time.strftime("%d.%m.%Y %H:%M:%S")
-
-            _log.info(
-                "Database update completed at %s in %d seconds",
-                formatted_end_time,
-                int(duration.total_seconds()),
-            )
-        finally:
-            # Restore original httpx logging level
-            httpx_logger.setLevel(original_level)
+        _log.info(
+            "Database update completed at %s in %d seconds",
+            formatted_end_time,
+            int(duration.total_seconds()),
+        )
 
     async def _populate_db(self, options: dict) -> None:
         """Asynchronously fetch data and synchronously save to database.
